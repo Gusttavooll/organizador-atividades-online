@@ -1,0 +1,8 @@
+# SO / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# artefatos de sessão local do Claude Code
+.claude/scheduled_tasks.lock
