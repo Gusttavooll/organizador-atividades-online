@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { StatusTag } from "@/components/entregas/StatusTag";
 import { STATUS_OPTIONS, getStatusMeta, getTipoLabel } from "@/lib/utils/status";
 import { formatDate } from "@/lib/utils/formatDate";
+import { mensagemDeErro } from "@/lib/utils/erro";
 import { observacaoProfessorSchema } from "@/lib/validations/entrega";
 import type { Entrega, StatusEntrega } from "@/types/entrega";
 
@@ -67,8 +68,8 @@ export function EntregaDetalheModal({ entrega, onClose, onSalvar }: EntregaDetal
         observacaoProfessor: resultado.data.observacao === "" ? null : resultado.data.observacao,
       });
       onClose();
-    } catch {
-      setErro("Não foi possível salvar as alterações. Tente novamente.");
+    } catch (erro) {
+      setErro(mensagemDeErro(erro, "Não foi possível salvar as alterações. Tente novamente."));
     } finally {
       setSalvando(false);
     }

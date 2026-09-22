@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { novoAlunoSchema } from "@/lib/validations/aluno";
+import { mensagemDeErro } from "@/lib/utils/erro";
 import type { AlunoInput } from "@/types/aluno";
 import type { Turma } from "@/types/turma";
 
@@ -19,16 +20,13 @@ export function AlunoFormulario({ turmas, onCriar }: AlunoFormularioProps) {
   const [email, setEmail] = useState("");
   const [turmaId, setTurmaId] = useState("");
   const [erros, setErros] = useState<Record<string, string>>({});
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const resultado = novoAlunoSchema.safeParse({
-      nome,
-      email,
-      turmaId: turmaId === "" ? null : turmaId,
-    });
+    const resultado = novoAlunoSchema.safeParse({ nome, email, turmaId });
 
     if (!resultado.success) {
       const proximosErros: Record<string, string> = {};
@@ -36,16 +34,20 @@ export function AlunoFormulario({ turmas, onCriar }: AlunoFormularioProps) {
         proximosErros[String(issue.path[0])] = issue.message;
       }
       setErros(proximosErros);
+      setErroEnvio(null);
       return;
     }
 
     setErros({});
+    setErroEnvio(null);
     setEnviando(true);
     try {
-      await onCriar(resultado.data);
+      await onCriar(resultado.data as AlunoInput);
       setNome("");
       setEmail("");
       setTurmaId("");
+    } catch (erro) {
+      setErroEnvio(mensagemDeErro(erro, "Não foi possível adicionar o aluno. Tente novamente."));
     } finally {
       setEnviando(false);
     }
@@ -97,14 +99,20 @@ export function AlunoFormulario({ turmas, onCriar }: AlunoFormularioProps) {
           className={INPUT_CLASSES}
           value={turmaId}
           onChange={(event) => setTurmaId(event.target.value)}
+          aria-invalid={Boolean(erros.turmaId)}
         >
-          <option value="">Sem turma</option>
+          <option value="" disabled>
+            Selecione uma turma
+          </option>
           {turmas.map((turma) => (
             <option key={turma.id} value={turma.id}>
               {turma.nome}
             </option>
           ))}
         </select>
+        {erros.turmaId && (
+          <p className="mt-1 text-xs text-status-nao-corrigido">{erros.turmaId}</p>
+        )}
       </div>
 
       <div className="flex items-end">
@@ -112,6 +120,10 @@ export function AlunoFormulario({ turmas, onCriar }: AlunoFormularioProps) {
           {enviando ? "Adicionando..." : "Adicionar aluno"}
         </Button>
       </div>
+
+      {erroEnvio && (
+        <p className="sm:col-span-4 text-sm text-status-nao-corrigido">{erroEnvio}</p>
+      )}
     </form>
   );
 }

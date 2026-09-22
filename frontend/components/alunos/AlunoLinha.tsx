@@ -4,16 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { alunoFormSchema } from "@/lib/validations/aluno";
-import type { Aluno } from "@/types/aluno";
+import { mensagemDeErro } from "@/lib/utils/erro";
+import type { Aluno, AlunoAtualizacaoInput } from "@/types/aluno";
 import type { Turma } from "@/types/turma";
 
 interface AlunoLinhaProps {
   aluno: Aluno;
   turmas: Turma[];
-  onSalvar: (
-    id: string,
-    dados: { nome: string; email: string; turmaId: string | null; observacao: string | null },
-  ) => Promise<void>;
+  onSalvar: (id: string, dados: AlunoAtualizacaoInput) => Promise<void>;
   onExcluir: (id: string) => Promise<void>;
 }
 
@@ -27,6 +25,7 @@ export function AlunoLinha({ aluno, turmas, onSalvar, onExcluir }: AlunoLinhaPro
   const [turmaId, setTurmaId] = useState(aluno.turmaId ?? "");
   const [observacao, setObservacao] = useState(aluno.observacao ?? "");
   const [erros, setErros] = useState<Record<string, string>>({});
+  const [erroAcao, setErroAcao] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(false);
 
@@ -38,6 +37,7 @@ export function AlunoLinha({ aluno, turmas, onSalvar, onExcluir }: AlunoLinhaPro
     setTurmaId(aluno.turmaId ?? "");
     setObservacao(aluno.observacao ?? "");
     setErros({});
+    setErroAcao(null);
     setEditando(false);
   }
 
@@ -55,23 +55,30 @@ export function AlunoLinha({ aluno, turmas, onSalvar, onExcluir }: AlunoLinhaPro
         proximosErros[String(issue.path[0])] = issue.message;
       }
       setErros(proximosErros);
+      setErroAcao(null);
       return;
     }
 
     setErros({});
+    setErroAcao(null);
     setSalvando(true);
     try {
       await onSalvar(aluno.id, resultado.data);
       setEditando(false);
+    } catch (erro) {
+      setErroAcao(mensagemDeErro(erro, "Não foi possível salvar as alterações. Tente novamente."));
     } finally {
       setSalvando(false);
     }
   }
 
   async function excluir() {
+    setErroAcao(null);
     setExcluindo(true);
     try {
       await onExcluir(aluno.id);
+    } catch (erro) {
+      setErroAcao(mensagemDeErro(erro, "Não foi possível excluir o aluno. Tente novamente."));
     } finally {
       setExcluindo(false);
     }
@@ -133,6 +140,8 @@ export function AlunoLinha({ aluno, turmas, onSalvar, onExcluir }: AlunoLinhaPro
           </div>
         </div>
 
+        {erroAcao && <p className="text-sm text-status-nao-corrigido">{erroAcao}</p>}
+
         <div className="flex justify-end gap-3">
           <Button variant="ghost" type="button" onClick={cancelarEdicao} disabled={salvando}>
             Cancelar
@@ -156,6 +165,7 @@ export function AlunoLinha({ aluno, turmas, onSalvar, onExcluir }: AlunoLinhaPro
             {aluno.observacao}
           </p>
         )}
+        {erroAcao && <p className="mt-1 text-sm text-status-nao-corrigido">{erroAcao}</p>}
       </div>
 
       <div className="flex items-center gap-3">

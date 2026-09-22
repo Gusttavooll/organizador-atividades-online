@@ -28,6 +28,7 @@ class AlunoUpdate(BaseModel):
     nome: str | None = Field(default=None, min_length=2, max_length=120)
     email: EmailStr | None = None
     turma_id: str | None = None
+    observacao: str | None = Field(default=None, max_length=1000)
 
     @model_validator(mode="after")
     def _pelo_menos_um_campo(self) -> "AlunoUpdate":
@@ -41,3 +42,4 @@ class AlunoOut(BaseModel):
     nome: str
     email: EmailStr
     turma_id: str
+    observacao: str | None

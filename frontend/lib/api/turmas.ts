@@ -1,15 +1,23 @@
+import { apiRequest } from "@/lib/api/client";
 import type { Turma } from "@/types/turma";
 
-const TURMAS_MOCK: Turma[] = [
-  { id: "turma-1", nome: "3º Ano A - Ensino Médio", anoLetivo: 2026 },
-  { id: "turma-2", nome: "3º Ano B - Ensino Médio", anoLetivo: 2026 },
-  { id: "turma-3", nome: "Turma de Extensão - Dev Web", anoLetivo: 2026 },
-];
+/** Formato exato devolvido pelo backend (snake_case). */
+interface TurmaApi {
+  id: string;
+  nome: string;
+}
+
+function turmaFromApi(api: TurmaApi): Turma {
+  return { id: api.id, nome: api.nome };
+}
 
 export async function listarTurmas(): Promise<Turma[]> {
-  return TURMAS_MOCK;
+  const turmas = await apiRequest<TurmaApi[]>("/turmas");
+  return turmas.map(turmaFromApi);
 }
 
 export async function buscarTurma(id: string): Promise<Turma | null> {
-  return TURMAS_MOCK.find((turma) => turma.id === id) ?? null;
+  // O backend não expõe GET /turmas/{id}; filtramos a listagem completa.
+  const turmas = await listarTurmas();
+  return turmas.find((turma) => turma.id === id) ?? null;
 }

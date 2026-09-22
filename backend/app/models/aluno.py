@@ -7,3 +7,4 @@ class Aluno:
     nome: str
     email: str
     turma_id: str
+    observacao: str | None = None

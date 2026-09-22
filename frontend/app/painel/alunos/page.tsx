@@ -2,6 +2,10 @@ import { AlunosListaClient } from "@/components/alunos/AlunosListaClient";
 import { listarAlunos } from "@/lib/api/alunos";
 import { listarTurmas } from "@/lib/api/turmas";
 
+// Mesma razão do /painel: dados vêm do backend real a cada request, não dá
+// pra pré-renderizar no build.
+export const dynamic = "force-dynamic";
+
 export default async function AlunosPage() {
   const [alunos, turmas] = await Promise.all([listarAlunos(), listarTurmas()]);
 

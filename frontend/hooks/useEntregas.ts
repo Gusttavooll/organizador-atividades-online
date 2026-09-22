@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { listarEntregas } from "@/lib/api/entregas";
+import { mensagemDeErro } from "@/lib/utils/erro";
 import type { Entrega, FiltrosEntrega } from "@/types/entrega";
 
 interface UseEntregasResult {
@@ -26,8 +27,8 @@ export function useEntregas(filtros: FiltrosEntrega): UseEntregasResult {
       .then((resultado) => {
         if (!cancelado) setEntregas(resultado);
       })
-      .catch(() => {
-        if (!cancelado) setErro("Não foi possível carregar as entregas.");
+      .catch((erro: unknown) => {
+        if (!cancelado) setErro(mensagemDeErro(erro, "Não foi possível carregar as entregas."));
       })
       .finally(() => {
         if (!cancelado) setCarregando(false);

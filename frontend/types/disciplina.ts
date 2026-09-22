@@ -2,5 +2,6 @@ export interface Disciplina {
   id: string;
   nome: string;
   turmaId: string;
-  professorResponsavelId: string;
+  professorNome: string;
+  professorEmail: string;
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AlunoFormulario } from "@/components/alunos/AlunoFormulario";
 import { AlunoLinha } from "@/components/alunos/AlunoLinha";
 import { criarAluno, atualizarAluno, excluirAluno } from "@/lib/api/alunos";
-import type { Aluno, AlunoInput } from "@/types/aluno";
+import type { Aluno, AlunoAtualizacaoInput, AlunoInput } from "@/types/aluno";
 import type { Turma } from "@/types/turma";
 
 interface AlunosListaClientProps {
@@ -22,10 +22,7 @@ export function AlunosListaClient({ alunosIniciais, turmas }: AlunosListaClientP
     );
   }
 
-  async function handleSalvar(
-    id: string,
-    dados: { nome: string; email: string; turmaId: string | null; observacao: string | null },
-  ) {
+  async function handleSalvar(id: string, dados: AlunoAtualizacaoInput) {
     const alunoAtualizado = await atualizarAluno(id, dados);
     setAlunos((atual) =>
       atual

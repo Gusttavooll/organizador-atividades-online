@@ -3,6 +3,11 @@ import { LinkButton } from "@/components/ui/Button";
 import { listarTurmas } from "@/lib/api/turmas";
 import { listarDisciplinas } from "@/lib/api/disciplinas";
 
+// Esta página busca dados reais do backend a cada acesso — não pode ser
+// pré-renderizada estaticamente no build (o backend não está no ar nesse
+// momento).
+export const dynamic = "force-dynamic";
+
 export default async function PainelPage() {
   const [turmas, disciplinas] = await Promise.all([
     listarTurmas(),
