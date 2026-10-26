@@ -1,0 +1,12 @@
+{
+  "name": "organizador-atividades-online-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tooling do monorepo (git hooks). Frontend e backend têm seus próprios projetos.",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

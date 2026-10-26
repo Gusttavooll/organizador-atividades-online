@@ -6,3 +6,6 @@ Thumbs.db
 
 # artefatos de sessão local do Claude Code
 .claude/scheduled_tasks.lock
+
+# dependências de tooling da raiz (Husky)
+node_modules/

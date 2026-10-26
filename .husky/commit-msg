@@ -1,0 +1,1 @@
+node scripts/format-commit-msg.js "$1"
