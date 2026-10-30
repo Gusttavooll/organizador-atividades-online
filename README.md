@@ -43,3 +43,17 @@ npm run dev
 
 Frontend em `http://localhost:3000`, API em `http://localhost:8000`
 (documentação interativa em `http://localhost:8000/docs`).
+
+## Skill Claude
+
+O repositório inclui uma skill própria do Claude Code,
+[`painel-professor-ui`](.claude/skills/painel-professor-ui), que orienta a
+criação e a revisão das telas do painel do professor e da landing page
+usando os tokens, componentes e regras de acessibilidade do projeto, e
+garante que o conteúdo original enviado pelo aluno nunca seja alterado ou
+escondido na interface.
+
+Ela é carregada automaticamente ao abrir o Claude Code neste repositório e
+pode ser chamada com `/painel-professor-ui`. Veja o
+[README da skill](.claude/skills/painel-professor-ui/README.md) para
+instalação em outros projetos e exemplos de uso.
